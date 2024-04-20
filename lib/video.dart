@@ -73,7 +73,7 @@ class _VideoAppState extends State<PlayerScreen> {
                   if (flickManager.flickControlManager!.isFullscreen) {
                     flickManager.flickControlManager!.exitFullscreen();
                   } else {
-                    Get.to(() => const SplashScreen());
+                    Get.offAll(() => const SplashScreen());
                   }
                 },
                 child: FlickVideoPlayer(flickManager: flickManager),

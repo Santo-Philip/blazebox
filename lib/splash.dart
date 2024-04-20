@@ -53,19 +53,15 @@ class _SplashScreenState extends State<SplashScreen> {
     );
 
   ReceiveSharingIntentPlus.getInitialText().then((String? value) async {
-      setState(() {
-        _sharedText = value;
-      });
+    _sharedText ??= value;
       if (_sharedText != null) {
         setState(() {
            _isLoading = true;
         });
           try {
             await link(value!);
-            setState(() {
-               _sharedText = null;
-              _isLoading= false;
-            });
+            clearSharedLink();
+            ReceiveSharingIntentPlus.reset();
           } catch (e) {
             
             setState(() {
@@ -83,6 +79,13 @@ class _SplashScreenState extends State<SplashScreen> {
         _isLoading = false;
       });
       log('Initial Link error : $err');
+    });
+  }
+
+  void clearSharedLink() {
+    setState(() {
+      _sharedText = null;
+      _isLoading = false;
     });
   }
 

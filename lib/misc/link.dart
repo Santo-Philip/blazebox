@@ -21,7 +21,7 @@ Future<void> link(String link) async {
       final link = val.replaceFirst(
           val.substring(0, questionMarkIndex).split('/')[2], 'd3.terabox.app');
       final thumb = data['thumb'];
-      Get.to(() => const PlayerScreen(), arguments: [
+      Get.offAll(() => const PlayerScreen(), arguments: [
         {'name': data['file_name']},
         {'size': size},
         {'link': link},

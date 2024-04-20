@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:developer';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,28 +23,6 @@ class _SplashScreenState extends State<SplashScreen> {
   bool _isLoading = false;
 
   final dio = Dio();
-
-  int extractFileSize(String link) {
-    RegExp regex = RegExp(r'size=(\d+)');
-    Match? match = regex.firstMatch(link);
-    if (match != null) {
-      String sizeString = match.group(1)!;
-      int fileSize = int.tryParse(sizeString) ?? 0;
-      return fileSize;
-    }
-    return 0;
-  }
-
-  String formatBytes(int bytes) {
-    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-    int index = 0;
-    double size = bytes.toDouble();
-    while (size >= 1024 && index < units.length - 1) {
-      size /= 1024;
-      index++;
-    }
-    return '${size.toStringAsFixed(2)} ${units[index]}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,35 +114,33 @@ class _SplashScreenState extends State<SplashScreen> {
                             padding:
                                 MaterialStatePropertyAll(EdgeInsets.all(22))),
                         onPressed: () async {
-                          RegExp regExp = RegExp(r'/s/([\w-]+)');
-                          if (regExp.hasMatch(urlController.text)) {
+                          if (urlController.text != "") {
                             setState(() {
                               _isLoading = true;
                             });
                             try {
                               final res = await dio.get(
-                                  'https://tera.instavideosave.com/?url=${urlController.text}');
+                                  'https://terabox-dl-arman.vercel.app/api?data=${urlController.text}');
                               if (res.statusCode == 200) {
-                                final getsize = res.data['api']['size'];
-                                int sizeInt = int.tryParse(getsize) ?? 0;
-                                final size = formatBytes(sizeInt);
-                                final val = res.data['api']['dlink'].toString();
+                               Map<String,dynamic> data = res.data;
+                                final size = data['size'];
+                                final val = data['link'].toString();
                                 int questionMarkIndex = val.indexOf('?');
                                 final link = val.replaceFirst(
                                     val
                                         .substring(0, questionMarkIndex)
                                         .split('/')[2],
                                     'd3.terabox.app');
-                                final thumb = res.data['api']['thumbs']['url1'];
+                                final thumb = data['thumb'];
                                 Get.to(() => const PlayerScreen(), arguments: [
-                                  {'name': res.data['api']['server_filename']},
+                                  {'name': data['file_name']},
                                   {'size': size},
                                   {'link': link},
                                   {'thumb': thumb}
                                 ]);
                                 if (settings.history == true) {
                                   final values = History(
-                                      name: res.data['api']['server_filename'],
+                                      name: data['file_name'],
                                       link: link,
                                       size: size,
                                       thumb: thumb);
@@ -174,6 +151,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                 });
                               }
                             } catch (e) {
+                              log('$e');
                               setState(() {
                                 _isLoading = false;
                               });

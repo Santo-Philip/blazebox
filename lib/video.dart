@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blazebox/controller/settingscontroller.dart';
 import 'package:blazebox/database/bookmark.dart';
 import 'package:blazebox/database/datastore.dart';
@@ -24,16 +26,21 @@ class PlayerScreen extends StatefulWidget {
 class _VideoAppState extends State<PlayerScreen> {
   late FlickManager flickManager;
 
-  dynamic title = Get.arguments[0]['name'];
-  dynamic size = Get.arguments[1]['size'];
-  dynamic link = Get.arguments[2]['link'];
-  dynamic thumb = Get.arguments[3]['thumb'];
+  dynamic title;
+  dynamic size;
+  dynamic link;
+  dynamic thumb;
   final dio = Dio();
   final settings = Get.find<SettingsController>();
 
   @override
   void initState() {
     super.initState();
+     dynamic arguments = Get.arguments;
+     title = arguments[0]['name'];
+     size = arguments[1]['size'];
+     link = arguments[2]['link'];
+     thumb = arguments[3]['thumb'];
     flickManager = FlickManager(
       videoPlayerController: VideoPlayerController.networkUrl(
         Uri.parse(link),
@@ -248,7 +255,7 @@ class ItemsList extends StatelessWidget {
                 BookMarkStore().deleteBookMark(index: currentIndex);
               },
               onTap: () {
-                Get.offAll(() => const PlayerScreen(), arguments: [
+                Get.off(() => const PlayerScreen(), arguments: [
                   {'name': data.name},
                   {'size': data.size},
                   {'link': data.link},

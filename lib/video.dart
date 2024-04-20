@@ -12,6 +12,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
@@ -106,72 +107,78 @@ class _VideoAppState extends State<PlayerScreen> {
                 width: double.infinity,
                 height: 80,
                 padding: const EdgeInsets.all(12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        final values = BookMark(
-                            name: title, link: link, size: size, thumb: thumb);
-                        BookMarkStore().addValue(userModel: values);
-                      },
-                      icon: const Icon(
-                        Icons.bookmark,
-                        color: Colors.amber,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 12,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          final values = BookMark(
+                              name: title, link: link, size: size, thumb: thumb);
+                          BookMarkStore().addValue(userModel: values);
+                        },
+                        icon: const Icon(
+                          Icons.bookmark,
+                          color: Colors.amber,
+                        ),
+                        label: const Text(
+                          'Save',
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
-                      label: const Text(
-                        'Save',
-                        style: TextStyle(color: Colors.blue),
+                      OutlinedButton.icon(
+                        onPressed: () async {
+                          String? externalStorageDirPath;
+                          externalStorageDirPath =
+                              (await getApplicationDocumentsDirectory())
+                                  .absolute
+                                  .path;
+                          await FlutterDownloader.enqueue(
+                            url: link,
+                            allowCellular: true,
+                            saveInPublicStorage: true,
+                            savedDir: externalStorageDirPath,
+                            openFileFromNotification: true,
+                            showNotification: true,
+                          );
+                        },
+                        style: const ButtonStyle(
+                            elevation: MaterialStatePropertyAll(0),
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.transparent)),
+                        icon: const Icon(
+                          Icons.download,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          size,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: () async {
-                        String? externalStorageDirPath;
-                        externalStorageDirPath =
-                            (await getApplicationDocumentsDirectory())
-                                .absolute
-                                .path;
-                        await FlutterDownloader.enqueue(
-                          url: link,
-                          allowCellular: true,
-                          saveInPublicStorage: true,
-                          savedDir: externalStorageDirPath,
-                          openFileFromNotification: true,
-                          showNotification: true,
-                        );
-                      },
-                      style: const ButtonStyle(
-                          elevation: MaterialStatePropertyAll(0),
-                          backgroundColor:
-                              MaterialStatePropertyAll(Colors.transparent)),
-                      icon: const Icon(
-                        Icons.download,
-                        color: Colors.white,
+                      ElevatedButton.icon(
+                        style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Color(0xFFFFEDEB))),
+                        onPressed: () async {
+                          Uri url = Uri.parse('https://razorpay.me/@mehub');
+                          await launchUrl(url);
+                        },
+                        icon: const Icon(
+                          Icons.coffee,
+                          color: Colors.black,
+                        ),
+                        label: const Text(
+                          'Donate',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
-                      label: Text(
-                        size,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Color(0xFFFFEDEB))),
-                      onPressed: () async {
-                        Uri url = Uri.parse('https://razorpay.me/@mehub');
-                        await launchUrl(url);
-                      },
-                      icon: const Icon(
-                        Icons.coffee,
-                        color: Colors.black,
-                      ),
-                      label: const Text(
-                        'Donate',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    )
-                  ],
+                      OutlinedButton.icon(onPressed: () async{
+                       await Share.share(link,subject: title);
+                      },icon: Icon(Icons.share), label: Text("Share",style: const TextStyle(color: Colors.white),),)
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(

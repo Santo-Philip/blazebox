@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:blazebox/controller/settingscontroller.dart';
-import 'package:blazebox/database/datastore.dart';
-import 'package:blazebox/database/history.dart';
 import 'package:blazebox/history.dart';
+import 'package:blazebox/misc/link.dart';
 import 'package:blazebox/settings.dart';
 import 'package:blazebox/video.dart';
 import 'package:dio/dio.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:receive_sharing_intent_plus/receive_sharing_intent_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:developer';
 
@@ -21,8 +23,74 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool _isLoading = false;
-
+  String? _sharedText;
+  late StreamSubscription _intentTextStreamSubscription;
   final dio = Dio();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _intentTextStreamSubscription =
+        ReceiveSharingIntentPlus.getTextStream().listen(
+      (String value) async {
+        setState(() {
+          _sharedText = value;
+          debugPrint('Shared: $_sharedText');
+        });
+          if (_sharedText != null) {
+            _isLoading = true;
+            await link(value);
+          }
+      },
+      onError: (err) {
+
+        setState(() {
+          _isLoading = false;
+        });
+        log('getLinkStream error: $err');
+      },
+    );
+
+  ReceiveSharingIntentPlus.getInitialText().then((String? value) async {
+      setState(() {
+        _sharedText = value;
+      });
+      if (_sharedText != null) {
+        setState(() {
+           _isLoading = true;
+        });
+          try {
+            await link(value!);
+            setState(() {
+               _sharedText = null;
+              _isLoading= false;
+            });
+          } catch (e) {
+            
+            setState(() {
+              _isLoading = false;
+            });
+            QuickAlert.show(
+                context: context,
+                type: QuickAlertType.error,
+                text: "Internal server error",
+                title: "Ooooops");
+          }
+        }
+    }, onError: (err) {
+      setState(() {
+        _isLoading = false;
+      });
+      log('Initial Link error : $err');
+    });
+  }
+
+  @override
+  void dispose() {
+    _intentTextStreamSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +109,18 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(onPressed: (){
-                    QuickAlert.show(
-                      context: context, 
-                    type: QuickAlertType.info,
-                   text: 'To delete an item from the list, press and hold on the item for a moment' );
-
-                  }, icon: const Icon(Icons.info,color: Color(0xFFA08C8A),)),
+                  IconButton(
+                      onPressed: () {
+                        QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.info,
+                            text:
+                                'To delete an item from the list, press and hold on the item for a moment');
+                      },
+                      icon: const Icon(
+                        Icons.info,
+                        color: Color(0xFFA08C8A),
+                      )),
                   IconButton(
                       onPressed: () {
                         Get.offAll(() => SettingsScreen());
@@ -104,8 +177,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: double.infinity,
                 child: _isLoading
                     ? Center(
-                        child: LoadingAnimationWidget.dotsTriangle(
-                            color: Colors.red, size: 50),
+                        child: LoadingAnimationWidget.fourRotatingDots(
+                            color: Color.fromARGB(255, 227, 97, 88), size: 50),
                       )
                     : ElevatedButton(
                         style: const ButtonStyle(
@@ -119,49 +192,16 @@ class _SplashScreenState extends State<SplashScreen> {
                               _isLoading = true;
                             });
                             try {
-                              final res = await dio.get(
-                                  'https://terabox-dl-arman.vercel.app/api?data=${urlController.text}');
-                              if (res.statusCode == 200) {
-                               Map<String,dynamic> data = res.data;
-                                final size = data['size'];
-                                final val = data['link'].toString();
-                                int questionMarkIndex = val.indexOf('?');
-                                final link = val.replaceFirst(
-                                    val
-                                        .substring(0, questionMarkIndex)
-                                        .split('/')[2],
-                                    'd3.terabox.app');
-                                final thumb = data['thumb'];
-                                Get.to(() => const PlayerScreen(), arguments: [
-                                  {'name': data['file_name']},
-                                  {'size': size},
-                                  {'link': link},
-                                  {'thumb': thumb}
-                                ]);
-                                if (settings.history == true) {
-                                  final values = History(
-                                      name: data['file_name'],
-                                      link: link,
-                                      size: size,
-                                      thumb: thumb);
-                                  HistoryStore().addValue(historyModel: values);
-                                }
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              }
+                              await link(urlController.text);
                             } catch (e) {
-                              log('$e');
                               setState(() {
                                 _isLoading = false;
                               });
                               QuickAlert.show(
-                                  // ignore: use_build_context_synchronously
                                   context: context,
                                   type: QuickAlertType.error,
-                                  title: 'Ooops',
-                                  text:
-                                      'Something went wrong please try again...');
+                                  text: "Internal server error",
+                                  title: "Ooooops");
                             }
                           }
                         },

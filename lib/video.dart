@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:blazebox/controller/settingscontroller.dart';
 import 'package:blazebox/database/bookmark.dart';
 import 'package:blazebox/database/datastore.dart';
@@ -75,7 +73,7 @@ class _VideoAppState extends State<PlayerScreen> {
                   if (flickManager.flickControlManager!.isFullscreen) {
                     flickManager.flickControlManager!.exitFullscreen();
                   } else {
-                    Get.offAll(() => const SplashScreen());
+                    Get.to(() => const SplashScreen());
                   }
                 },
                 child: FlickVideoPlayer(flickManager: flickManager),

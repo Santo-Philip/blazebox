@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:receive_sharing_intent_plus/receive_sharing_intent_plus.dart';
 
 
 class Initializer {
@@ -26,6 +27,11 @@ class Initializer {
           Permission.notification.request();
         }
       });
+    await Permission.storage.isDenied.then((value) => {
+      if(value){
+        Permission.storage.request()
+      }
+    });
   await FlutterDownloader.initialize(
     debug: true,
     ignoreSsl: false ,

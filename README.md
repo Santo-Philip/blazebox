@@ -39,4 +39,17 @@ A new Flutter project to stream videos directly from terabox using links
   <kbd>receive_sharing_intent_plus : ^1.0.1</kbd>
 </details>
 
+## Screenshots
+
+<table>
+  <td>
+    <tr width = 50%>
+      <img src="https://raw.githubusercontent.com/Santo-Philip/blazebox/main/assets/IMG_20240729_233059_284.jpg">
+    </tr>
+    <tr width = 50%>
+      <img src="https://raw.githubusercontent.com/Santo-Philip/blazebox/main/assets/IMG_20240729_233059_284.jpg">
+    </tr>
+  </td>
+</table>
+
   

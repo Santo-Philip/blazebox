@@ -66,4 +66,7 @@ A new Flutter project to stream videos directly from terabox using links
   </tr>
 </table>
 
+
+## Getting Started
+For help getting started with Flutter, view online [documentation]("https://flutter.dev/")
   

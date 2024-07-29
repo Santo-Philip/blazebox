@@ -10,6 +10,8 @@ A new Flutter project to stream videos directly from terabox using links
 
 • Link history 
 
+• Bookmark
+
 • Hide historys
 
 • Download Videos directly within the app
@@ -17,6 +19,10 @@ A new Flutter project to stream videos directly from terabox using links
 • External Player support
 
 • Razorpay payment for donations 
+
+• Start video without sound switch
+
+• Start video in full screen switch
 
 ## Dependencies 
 
@@ -52,10 +58,10 @@ A new Flutter project to stream videos directly from terabox using links
   </tr>
   <tr>
     <td width = 50%>
-      <img src="https://raw.githubusercontent.com/Santo-Philip/blazebox/main/assets/IMG_20240729_233059_284.jpg">
+      <img src="https://raw.githubusercontent.com/Santo-Philip/blazebox/main/assets/IMG_20240729_233121_033.jpg">
     </td>
     <td width = 50%>
-      <img src="https://raw.githubusercontent.com/Santo-Philip/blazebox/main/assets/IMG_20240729_233110_148.jpg">
+      <img src="https://raw.githubusercontent.com/Santo-Philip/blazebox/main/assets/IMG_20240729_233115_216.jpg">
     </td>
   </tr>
 </table>

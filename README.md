@@ -16,6 +16,8 @@ A new Flutter project to stream videos directly from terabox using links
 
 • External Player support
 
+• Razorpay payment for donations 
+
 ## Dependencies 
 
 <details>

@@ -18,22 +18,22 @@ A new Flutter project to stream videos directly from terabox using links
 
 ## Dependencies 
 
-  `video_player` : ^2.8.3
-  `flick_video_player` : ^0.7.0
-  `get`: ^4.6.6
-  `url_launcher`: ^6.2.5
-  `dio`: ^5.4.2+1
-  `flutter_downloader`: ^1.11.6
-  `path_provider`: ^2.1.2
-  `loading_animation_widget`: ^1.2.1
-  `quickalert`: ^1.1.0
-  `hive`: ^2.2.3
-  `hive_flutter`: ^1.1.0
-  `permission_handler`: ^11.3.1
-  `cached_network_image`: ^3.3.1
-  `fast_cached_network_image`: ^1.2.9
-  `share_plus`: ^6.3.4
-  `receive_sharing_intent_plus`: ^1.0.1
+  ..`video_player` : ^2.8.3
+  ..`flick_video_player` : ^0.7.0
+  ..`get`: ^4.6.6
+  ..`url_launcher`: ^6.2.5
+  ..`dio`: ^5.4.2+1
+  ..`flutter_downloader`: ^1.11.6
+  ..`path_provider`: ^2.1.2
+  ..`loading_animation_widget`: ^1.2.1
+  ..`quickalert`: ^1.1.0
+  ..`hive`: ^2.2.3
+  ..`hive_flutter`: ^1.1.0
+  ..`permission_handler`: ^11.3.1
+  ..`cached_network_image`: ^3.3.1
+  ..`fast_cached_network_image`: ^1.2.9
+  ..`share_plus`: ^6.3.4
+  ..`receive_sharing_intent_plus`: ^1.0.1
 
 
 
